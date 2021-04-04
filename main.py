@@ -6,12 +6,21 @@ import SkillBase
 
 def test_character(name):
     toon = Character(name)
-    toon.gen.strPts = 5
-    toon.gen.dexPts = 21
-    toon.gen.conPts = 6
-    toon.skills.append(SkillBase.get_skill("Acrobatics", 5))
+    toon.gen.str_pts = 5
+    toon.gen.dex_pts = 21
+    toon.gen.con_pts = 6
+    toon.gen.spd_pts = 3
+    toon.skills.append(SkillBase.get_skill("Acrobatics", 3))
+    toon.skills.append(SkillBase.get_skill("Riding", 5))
+    toon.skills.append(SkillBase.get_skill("Teamwork", 3))
+    toon.skills.append(SkillBase.get_skill("Running", 0))
+    toon.skills.append(SkillBase.get_skill("Swimming", 1))
+    toon.skills.append(SkillBase.get_melee_weapon("Sword", 12))
+    toon.skills.append(SkillBase.get_ranged_weapon("Bow", 12))
+    toon.skills.append(SkillBase.get_profession("Ranger", 2))
     toon.recalc()
     print(toon)
+    print(toon.roll("MW:Sword"))
 
 
 # Press the green button in the gutter to run the script.
