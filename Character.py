@@ -6,7 +6,10 @@ class CharGen:
     str_pts = 0
     dex_pts = 0
     con_pts = 0
-    bodPts = 0
+    bod_pts = 0
+
+    int_pts = 0
+    pre_pts = 0
 
     mcv_pts = 0
     rcv_pts = 0
@@ -19,7 +22,7 @@ class CharGen:
     stun_pts = 0
 
     def cost(self):
-        return self.str_pts + self.dex_pts + self.con_pts + self.bodPts \
+        return self.str_pts + self.dex_pts + self.con_pts + self.bod_pts + self.int_pts \
                + self.mcv_pts + self.rcv_pts + self.dcv_pts + self.pd_pts + self.ed_pts + +self.spd_pts \
                + self.rec_pts + self.end_pts + self.stun_pts
 
@@ -30,8 +33,13 @@ class Stats:
     dex = 10
     con = 10
     bod = 10
+    int = 10
+    pre = 10
 
     dxf = 2
+    inf = 2
+    prf = 2
+    skf = 2
 
     mcv = 3
     rcv = 3
@@ -47,9 +55,14 @@ class Stats:
         self.str = 10 + round_stat(chargen.str_pts, 1)
         self.dex = 10 + round_stat(chargen.dex_pts, 3)
         self.con = 10 + round_stat(chargen.con_pts, 2)
-        self.bod = 10 + round_stat(chargen.bodPts, 2)
+        self.bod = 10 + round_stat(chargen.bod_pts, 2)
+        self.int = 10 + round_stat(chargen.int_pts, 1)
+        self.pre = 10 + round_stat(chargen.pre_pts, 1)
 
         self.dxf = round_stat(self.dex, 5)
+        self.inf = round_stat(self.int, 5)
+        self.prf = round_stat(self.pre, 5)
+        self.skf = 2
 
         self.mcv = round_stat(self.dex + chargen.mcv_pts*0.6, 3)
         self.rcv = round_stat(self.dex + chargen.rcv_pts*0.6, 3)
@@ -68,11 +81,13 @@ class Stats:
         return json.dumps(self, default=lambda o: o.__dict__, indent=4)
 
 
+# The character themselves
 class Character:
     name = ""
     gen = CharGen()
     stats = Stats()
     skills = []
+    powers = []
 
     def __init__(self, name):
         self.name = name
@@ -93,9 +108,16 @@ class Character:
                 return skill.roll(self.stats)
         return None
 
+    def skill2str(self, skill):
+        return f"{skill}{skill.roll(self.stats)}"
+
     def __str__(self):
-        skill_list = ",\n".join(map(str, self.skills))
-        return f"{self.name}<{self.cost()}> Stats {self.stats.__str__()} Skills [\n{skill_list}\n]"
+        skill_list = "\n    ".join(map(self.skill2str, self.skills))
+        power_list = "\n    ".join(map(self.skill2str, self.powers))
+        return f"{self.name}<{self.cost()}> " + \
+               f"Stats {self.stats.__str__()} " + \
+               f"Skills [\n    {skill_list}\n] " + \
+               f"Powers [\n    {power_list}\n]"
 
 
 # Function to perform stats calculations

@@ -3,6 +3,7 @@ import copy
 from Character import round_stat
 
 
+# Type of skill (from a mechanics viewpoint)
 class SkillType:
     def __init__(self, name, entry_pts, level_pts, is_everyman):
         self.name = name
@@ -20,12 +21,14 @@ class SkillType:
         return str(1 + int((pts - self.entry_pts)/self.level_pts))
 
 
+# The currently known types of skills
 MajorSkill = SkillType("Major", 3, 2, False)
 EverymanSkill = SkillType("Everyman", 3, 2, True)
 MinorSkill = SkillType("Minor", 2, 1, False)
 CombatSkill = SkillType("Combat", 3, 3, False)
 
 
+# The data for a specific skill
 class Skill:
     def __init__(self, name, base_stat, pts, skill_type):
         self.name = name
@@ -54,14 +57,16 @@ class Skill:
         return int(9 + self.stat(stats) + int(rank))
 
     def __str__(self):
-        return f"{self.name}[{self.base_stat.upper()}:{self.rank()}]"
+        return f"{self.name:30s}{self.base_stat.upper():5s}{self.rank():5s}"
 
 
+# The map of known skills
 skill_map = {
     # General Skills
     "Mental Area Skill": Skill("Mental Area Skill", "inf", 0, MinorSkill),
-    "Knowledge Area Skill": Skill("Knowledge Area Skill", "gen", 0, MinorSkill),
+    "Knowledge Area Skill": Skill("Knowledge Area Skill", "skf", 0, MinorSkill),
     "Physical Area Skill": Skill("Physical Area Skill", "dxf", 0, MinorSkill),
+    "Presence Area Skill": Skill("Presence Area Skill", "prf", 0, MinorSkill),
     "Melee Skill": Skill("Melee Skill", "mcv", 0, CombatSkill),
     "Ranged Skill": Skill("Ranged Skill", "rcv", 0, CombatSkill),
     # Physical Skills
@@ -76,9 +81,42 @@ skill_map = {
     "Riding": Skill("Riding", "dxf", 0, MajorSkill),
     "Running": Skill("Running", "dxf", 0, EverymanSkill),
     "SleightOfHand": Skill("SleightOfHand", "dxf", 0, MajorSkill),
-    "Stealth": Skill("Stealth", "dxf", 0, MajorSkill),
+    "Stealth": Skill("Stealth", "dxf", 0, EverymanSkill),
     "Swimming": Skill("Swimming", "dxf", 0, MajorSkill),
     "Teamwork": Skill("Teamwork", "dxf", 0, MajorSkill),
+    # Mental Skills
+    "Analyze": Skill("Analyze", "inf", 0, MajorSkill),
+    "Concealment": Skill("Concealment", "inf", 0, EverymanSkill),
+    "Criminology": Skill("Criminology", "inf", 0, MajorSkill),
+    "Deduction": Skill("Deduction", "inf", 0, EverymanSkill),
+    "Disguise": Skill("Disguise", "inf", 0, MajorSkill),
+    "Forgery": Skill("Forgery", "inf", 0, MajorSkill),
+    "Gambling": Skill("Gambling", "inf", 0, MajorSkill),
+    "Inventor": Skill("Inventor", "inf", 0, MajorSkill),
+    "Lipreading": Skill("Lipreading", "inf", 0, MajorSkill),
+    "Mechanics": Skill("Mechanics", "inf", 0, MajorSkill),
+    "Mimicry": Skill("Mimicry", "inf", 0, MajorSkill),
+    "Navigation": Skill("Navigation", "inf", 0, MajorSkill),
+    "Surgeon": Skill("Surgeon", "inf", 0, MajorSkill),
+    "Shadowing": Skill("Shadowing", "inf", 0, MajorSkill),
+    "Survival": Skill("Survival", "inf", 0, MajorSkill),
+    "Tactics": Skill("Tactics", "inf", 0, MajorSkill),
+    # Presence Skills
+    "Acting": Skill("Acting", "prf", 0, MajorSkill),
+    "AnimalHandler": Skill("AnimalHandler", "prf", 0, MajorSkill),
+    "Bribery": Skill("Bribery", "prf", 0, MajorSkill),
+    "Conversation": Skill("Conversation", "prf", 0, MajorSkill),
+    "Courtier": Skill("Courtier", "prf", 0, MajorSkill),
+    "Intimidation": Skill("Intimidation", "prf", 0, MajorSkill),
+    "Streetwise": Skill("Streetwise", "prf", 0, MajorSkill),
+    "Oratory": Skill("Oratory", "prf", 0, MajorSkill),
+    "Persuasion": Skill("Persuasion", "prf", 0, MajorSkill),
+    "Seduction": Skill("Seduction", "prf", 0, MajorSkill),
+    "Trading": Skill("Trading", "prf", 0, MajorSkill),
+    # General Skills
+    "Tracking": Skill("Tracking", "skf", 0, MajorSkill),
+    "Ventriloquist": Skill("Ventriloquist", "skf", 0, MajorSkill),
+    "Weaponsmith": Skill("Weaponsmith", "skf", 0, MajorSkill),
     # Autofire
     # Martial Arts
     # Power
@@ -100,7 +138,7 @@ def get_skill(name, pts):
 
 
 def get_language(name, pts):
-    skill = get_skill("Mental Area Skill", pts)
+    skill = get_skill("Presence Area Skill", pts)
     skill.name = f"LS:{name}"
     return skill
 
@@ -114,6 +152,12 @@ def get_culture(name, pts):
 def get_science(name, pts):
     skill = get_skill("Mental Area Skill", pts)
     skill.name = f"SS:{name}"
+    return skill
+
+
+def get_extreme_env(name, pts):
+    skill = get_skill("Knowledge Area Skill", pts)
+    skill.name = f"ES:{name}"
     return skill
 
 
@@ -141,9 +185,9 @@ def get_vehicle(name, pts):
     return skill
 
 
-def get_mount(name, pts):
-    skill = get_skill("Physical Area Skill", pts)
-    skill.name = f"MF:{name}"
+def get_beast(name, pts):
+    skill = get_skill("Presence Area Skill", pts)
+    skill.name = f"BF:{name}"
     return skill
 
 
